@@ -7,14 +7,16 @@ const protect = async (req,res,next) => {
     try{
         token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token,process.env.JWTsecret);
-        req.user = await User.findById(decoded.id).select("-password");
+        req.user = await User.findById(decoded.id).select("-password").lean();
+
+        next()
     }catch(e){
-        res.status(401).json({message:"authorization failed"})
+        return res.status(401).json({message:"authorization failed"})
         }
    }
 
    if(!token){
-    res.status(401).json({message:"authorization failed, no token"})
+    return res.status(401).json({message:"authorization failed, no token"})
    }
 }
 
