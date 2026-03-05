@@ -6,7 +6,18 @@ const {protect} = require("../middlewares/authMiddleware")
 
 router.get("/",protect,async (req,res)=>{
     try {
-    const jobs = await Job.find({user: req.user._id}).sort({createdAt:-1})
+      let queryObj = {user: req.user._id};
+
+      if (req.query.status) {
+        queryObj.status = req.query.status;
+      }
+      if(req.query.search){
+        queryObj.$or = [
+          {position: { $regex: req.query.search, $options: "i" } },
+          {company: { $regex: req.query.search, $options: "i" } },
+        ]
+      }
+    const jobs = await Job.find(queryObj).sort({createdAt:-1})
     res.status(200).json(jobs)
     } catch (error) {
     res.status(500).json({ message: "Error fetching jobs", error: error.message });
