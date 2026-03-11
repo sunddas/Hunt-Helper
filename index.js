@@ -10,8 +10,8 @@ connecttodb(process.env.mongoURI);
 
 app.use(express.json());
 
-app.use("/auth",authRoute)
-app.use("/jobs", require("./routes/jobs"));
+app.use("/api/auth",authRoute)
+app.use("/api/jobs", require("./routes/jobs"));
 app.get("/",(req,res)=>{
     res.send("acha ji aesa he kia")
 })
